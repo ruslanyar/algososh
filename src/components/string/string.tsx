@@ -1,8 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 
-import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
-import { Input } from '../ui/input/input';
+import { InputWithButton } from '../input-with-button/input-with-button';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { swap } from '../../utils/utils';
@@ -18,7 +17,7 @@ const getArrayOfLetters = (str: string): string[][] | null => {
   const result: string[][] = [[...arr]];
 
   let start = 0,
-      end   = arr.length - 1;
+    end = arr.length - 1;
 
   while (start <= end) {
     swap(arr, start, end);
@@ -31,15 +30,18 @@ const getArrayOfLetters = (str: string): string[][] | null => {
 };
 
 const getCircleState = (idx: number, step: number, len: number) => {
-  if (idx < step || idx > len - 1 - step)     return ElementStates.Modified;
+  if (idx < step || idx > len - 1 - step) return ElementStates.Modified;
   if (idx === step || idx === len - 1 - step) return ElementStates.Changing;
-  if (idx > step && idx < len - 1 - step)     return ElementStates.Default;
+  if (idx > step && idx < len - 1 - step) return ElementStates.Default;
 };
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [letters, setLetters] = useState<{ arr: string[]; step: number } | null>(null);
+  const [letters, setLetters] = useState<{
+    arr: string[];
+    step: number;
+  } | null>(null);
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -68,21 +70,15 @@ export const StringComponent: React.FC = () => {
 
   return (
     <SolutionLayout title='Строка'>
-      <div className={styles['input-container']}>
-        <Input
-          isLimitText
-          maxLength={11}
-          max={11}
-          value={inputValue}
-          onChange={onChangeHandler}
-        />
-        <Button
-          text='Развернуть'
-          linkedList='small'
-          isLoader={isLoading}
-          onClick={onClickHandler}
-        />
-      </div>
+      <InputWithButton
+        value={inputValue}
+        maxLength={11}
+        max={11}
+        text='Развернуть'
+        onChange={onChangeHandler}
+        onClick={onClickHandler}
+        isLoader={isLoading}
+      />
       <ul className={`${styles['elements-container']} list`}>
         {letters?.arr &&
           letters.arr.map((letter, idx) => (
