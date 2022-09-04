@@ -73,7 +73,6 @@ export const StringComponent: React.FC = () => {
       <InputWithButton
         value={inputValue}
         maxLength={11}
-        max={11}
         text='Развернуть'
         onChange={onChangeHandler}
         onClick={onClickHandler}
