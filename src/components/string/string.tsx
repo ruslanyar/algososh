@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 
 import { Circle } from '../ui/circle/circle';
 import { InputWithButton } from '../input-with-button/input-with-button';
@@ -43,11 +43,11 @@ export const StringComponent: React.FC = () => {
     step: number;
   } | null>(null);
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-  };
+  }, []);
 
-  const onClickHandler = () => {
+  const onClickHandler = useCallback(() => {
     const array = getArrayOfLetters(inputValue);
 
     if (!array) return;
@@ -66,7 +66,7 @@ export const StringComponent: React.FC = () => {
         setIsLoading(false);
       }
     }, DELAY_IN_MS);
-  };
+  }, [inputValue]);
 
   return (
     <SolutionLayout title='Строка'>

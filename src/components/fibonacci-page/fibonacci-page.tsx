@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 import { InputWithButton } from '../input-with-button/input-with-button';
@@ -25,11 +25,11 @@ export const FibonacciPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fibArray, setFibArray] = useState<string[]>([]);
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-  };
+  }, []);
 
-  const onClickHandler = () => {
+  const onClickHandler = useCallback(() => {
     const matrix = getFibMatrix(inputValue);
 
     setIsLoading(true);
@@ -45,9 +45,9 @@ export const FibonacciPage: React.FC = () => {
         setIsLoading(false);
       }
     }, SHORT_DELAY_IN_MS);
-  }
+  }, [inputValue]);
 
-  const isDisabled = (+inputValue > 19) || (inputValue === '');
+  const isDisabled = +inputValue > 19 || inputValue === '';
 
   const justify = fibArray.length < 11 ? 'center' : 'flex-start';
 
@@ -63,12 +63,16 @@ export const FibonacciPage: React.FC = () => {
         onClick={onClickHandler}
         disabled={isDisabled}
       />
-      <ul style={{justifyContent: justify}} className={`${styles['elements-container']} list`}>
-        {fibArray && fibArray.map((num, idx) => (
-          <li key={idx}>
-            <Circle letter={num} index={idx} />
-          </li>
-        ))}
+      <ul
+        style={{ justifyContent: justify }}
+        className={`${styles['elements-container']} list`}
+      >
+        {fibArray &&
+          fibArray.map((num, idx) => (
+            <li key={idx}>
+              <Circle letter={num} index={idx} />
+            </li>
+          ))}
       </ul>
     </SolutionLayout>
   );

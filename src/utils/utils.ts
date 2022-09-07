@@ -1,5 +1,5 @@
 export const swap = (
-  arr: string[],
+  arr: any[],
   firstIndex: number,
   secondIndex: number
 ): void => {
