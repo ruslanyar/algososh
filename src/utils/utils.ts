@@ -7,3 +7,7 @@ export const swap = (
   arr[firstIndex] = arr[secondIndex];
   arr[secondIndex] = tmp;
 };
+
+export const setDelay = (delay: number) => {
+  return new Promise((resolve) => setTimeout(() => resolve(null), delay));
+};

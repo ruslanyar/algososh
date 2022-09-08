@@ -1,0 +1,23 @@
+.controls {
+  display: flex;
+  column-gap: 12px;
+  width: 829px;
+  margin: 0 auto 48px;
+}
+
+.controls > :last-child {
+  margin-left: auto;
+}
+
+.input {
+  width: 377px;
+}
+
+.elements-container {
+  max-width: 944px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 78px 16px;
+  margin: 0 auto;
+}

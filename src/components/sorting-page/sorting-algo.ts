@@ -6,7 +6,7 @@ import {
   MIN_VALUE,
   MAX_VALUE,
 } from '../../constants/array-ranges';
-import { swap } from '../../utils/utils';
+import { setDelay, swap } from '../../utils/utils';
 
 import { Direction } from '../../types/direction';
 import { ElementStates, TElement } from '../../types/element-states';
@@ -27,10 +27,6 @@ export const getRandomArr = () => {
     }
   }
   return randomArr;
-};
-
-const setDelay = (delay: number) => {
-  return new Promise((resolve) => setTimeout(() => resolve(null), delay));
 };
 
 const setElementsStateSelection = (
