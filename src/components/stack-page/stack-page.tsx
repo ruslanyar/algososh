@@ -5,7 +5,6 @@ import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
-import { setDelay } from '../../utils/utils';
 import { ElementStates } from '../../types/element-states';
 
 import styles from './stack-page.module.css';
@@ -21,7 +20,7 @@ export const StackPage: React.FC = () => {
     setInputValue(e.target.value);
   };
 
-  const addToStack = async (item: string) => {
+  const addToStack = (item: string) => {
     setLastElementState(ElementStates.Changing);
     setStackList((prev) => {
       const newStack = [...prev];
@@ -29,22 +28,24 @@ export const StackPage: React.FC = () => {
       return newStack;
     });
     setInputValue('');
-    await setDelay(500);
-    setLastElementState(ElementStates.Default);
+    setTimeout(() => {
+      setLastElementState(ElementStates.Default);
+    }, 500);
   };
 
-  const deleteFromStack = async () => {
+  const deleteFromStack = () => {
     setLastElementState(ElementStates.Changing);
-    await setDelay(500);
-    setStackList((prev) => {
-      const newStack = [...prev];
-      newStack.pop();
-      return newStack;
-    });
-    setLastElementState(ElementStates.Default);
+    setTimeout(() => {
+      setStackList((prev) => {
+        const newStack = [...prev];
+        newStack.pop();
+        return newStack;
+      });
+      setLastElementState(ElementStates.Default);
+    }, 500);
   };
 
-  const cleanStack = () => {
+  const clearStack = () => {
     setStackList([]);
   };
 
@@ -66,7 +67,7 @@ export const StackPage: React.FC = () => {
           disabled={!inputValue || stackList.length === 20}
         />
         <Button text='Удалить' onClick={deleteFromStack} disabled={isEmpty} />
-        <Button text='Очистить' onClick={cleanStack} disabled={isEmpty} />
+        <Button text='Очистить' onClick={clearStack} disabled={isEmpty} />
       </div>
       <ul className={`${styles['elements-container']} list`}>
         {stackList &&
