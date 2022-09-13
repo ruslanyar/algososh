@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useReducer } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
@@ -7,65 +7,70 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { HEAD, TAIL } from '../../constants/element-captions';
 import { ElementStates } from '../../types/element-states';
-import {
-  ActionType,
-  initState,
-  IQueueState,
-  queueReducer,
-} from './queueReducer';
+import { Queue } from './utils';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 import styles from './queue-page.module.css';
 
+const queue = new Queue(7);
+
 export const QueuePage: React.FC = () => {
-  const [queue, dispatch] = useReducer(queueReducer, initState);
+  const [queueList, setQueueList] = useState(queue.elements);
   const [inputValue, setInputValue] = useState('');
-  const [headState, setHeadState] = useState(ElementStates.Default);
-  const [tailState, setTailState] = useState(ElementStates.Default);
-  const [isEnqLoading, setIsEnqLoading] = useState(false);
-  const [isDeqLoading, setIsDeqLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({ enq: false, deq: false });
+  const [elementsState, setElementsState] = useState({
+    head: ElementStates.Default,
+    tail: ElementStates.Default,
+  });
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const enqueue = (item: string) => {
-    setIsEnqLoading(true);
-    setTailState(ElementStates.Changing);
-    dispatch({ type: ActionType.Enqueue, payload: item });
+  const enqueueHandler = (item: string) => {
+    setIsLoading((prev) => ({ ...prev, enq: true }));
+    setElementsState((prev) => ({ ...prev, tail: ElementStates.Changing }));
+
+    queue.enqueue(item);
+    setQueueList(queue.elements);
     setInputValue('');
+
     setTimeout(() => {
-      setTailState(ElementStates.Default);
-      setIsEnqLoading(false);
-    }, 500);
+      setIsLoading((prev) => ({ ...prev, enq: false }));
+      setElementsState((prev) => ({ ...prev, tail: ElementStates.Default }));
+    }, SHORT_DELAY_IN_MS);
   };
 
-  const dequeue = () => {
-    setIsDeqLoading(true);
-    if (queue.length === 1) {
-      setTailState(ElementStates.Changing);
+  const dequeueHandler = () => {
+    setIsLoading((prev) => ({ ...prev, deq: true }));
+    if (queue.len === 1) {
+      setElementsState((prev) => ({ ...prev, tail: ElementStates.Changing }));
     } else {
-      setHeadState(ElementStates.Changing);
+      setElementsState((prev) => ({ ...prev, head: ElementStates.Changing }));
     }
+
     setTimeout(() => {
-      dispatch({ type: ActionType.Dequeue });
-      if (queue.length === 1) {
-        setTailState(ElementStates.Default);
+      queue.dequeue();
+      setQueueList(queue.elements);
+      if (queue.len === 0) {
+        setElementsState((prev) => ({ ...prev, tail: ElementStates.Default }));
       } else {
-        setHeadState(ElementStates.Default);
+        setElementsState((prev) => ({ ...prev, head: ElementStates.Default }));
       }
-      setIsDeqLoading(false);
-    }, 500);
+      setIsLoading((prev) => ({ ...prev, deq: false }));
+    }, SHORT_DELAY_IN_MS);
   };
 
   const clearQueue = () => {
-    dispatch({ type: ActionType.Clear });
+    queue.clear();
+    setQueueList(queue.elements);
   };
 
-  const getCircleState = (obj: IQueueState, idx: number) => {
-    if (idx === obj.tail) {
-      return tailState;
-    } else if (idx === obj.head) {
-      return headState;
+  const getCircleState = (list: Queue, idx: number) => {
+    if (idx === list.tailIdx) {
+      return elementsState.tail;
+    } else if (idx === list.headIdx) {
+      return elementsState.head;
     } else {
       return ElementStates.Default;
     }
@@ -83,31 +88,31 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           text='Добавить'
-          onClick={() => enqueue(inputValue)}
-          disabled={!inputValue || queue.length >= queue.size || isDeqLoading}
-          isLoader={isEnqLoading}
+          onClick={() => enqueueHandler(inputValue)}
+          disabled={!inputValue || queue.isFull || isLoading.deq}
+          isLoader={isLoading.enq}
         />
         <Button
           text='Удалить'
-          onClick={dequeue}
-          disabled={!queue.length || isEnqLoading}
-          isLoader={isDeqLoading}
+          onClick={dequeueHandler}
+          disabled={queue.isEmpty || isLoading.enq}
+          isLoader={isLoading.deq}
         />
         <Button
           text='Очистить'
           onClick={clearQueue}
-          disabled={!queue.length || isEnqLoading || isDeqLoading}
+          disabled={queue.isEmpty || isLoading.enq || isLoading.deq}
         />
       </div>
       <ul className={`${styles['elements-container']} list`}>
-        {queue.list &&
-          queue.list.map((el, idx) => (
+        {queueList &&
+          queueList.map((el, idx) => (
             <li key={idx}>
               <Circle
                 letter={el}
                 index={idx}
-                head={idx === queue.head ? HEAD : null}
-                tail={idx === queue.tail ? TAIL : null}
+                head={!queue.isEmpty && idx === queue.headIdx ? HEAD : null}
+                tail={!queue.isEmpty && idx === queue.tailIdx ? TAIL : null}
                 state={getCircleState(queue, idx)}
               />
             </li>
