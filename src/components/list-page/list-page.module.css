@@ -1,0 +1,23 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 38px 12px;
+  width: 952px;
+  margin: 0 auto 120px;
+}
+
+.input {
+  width: 204px;
+}
+
+.elements {
+  display: flex;
+  justify-content: center;
+  column-gap: 16px;
+}
+
+.elements-item {
+  display: flex;
+  column-gap: 16px;
+  align-items: center;
+}
