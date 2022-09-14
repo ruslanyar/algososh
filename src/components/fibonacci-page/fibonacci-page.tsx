@@ -1,36 +1,25 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 import { InputWithButton } from '../input-with-button/input-with-button';
 import { Circle } from '../ui/circle/circle';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
+import { getFibMatrix } from './utils';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+
 import styles from './fibonacci-page.module.css';
-
-const getFibMatrix = (str: string) => {
-  const num = +str;
-  const fibArr = ['0', '1'];
-  const fibMatrix = [['0'], ['0', '1']];
-
-  for (let i = 2; i <= num; i++) {
-    fibArr.push((+fibArr[i - 2] + +fibArr[i - 1]).toString());
-    fibMatrix.push([...fibArr]);
-  }
-
-  return fibMatrix;
-};
 
 export const FibonacciPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [fibArray, setFibArray] = useState<string[]>([]);
+  const [fibArray, setFibArray] = useState<number[]>([]);
 
   const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   }, []);
 
   const onClickHandler = useCallback(() => {
-    const matrix = getFibMatrix(inputValue);
+    const matrix = getFibMatrix(+inputValue);
 
     setIsLoading(true);
 
@@ -70,7 +59,7 @@ export const FibonacciPage: React.FC = () => {
         {fibArray &&
           fibArray.map((num, idx) => (
             <li key={idx}>
-              <Circle letter={num} index={idx} />
+              <Circle letter={num.toString()} index={idx} />
             </li>
           ))}
       </ul>
