@@ -1,8 +1,4 @@
-interface IQueue<T> {
-  enqueue: (item: T) => void;
-  dequeue: () => void;
-  clear: () => void;
-}
+import { IQueue } from './types';
 
 export class Queue<T = string> implements IQueue<T> {
   private queue: (T | undefined)[] = [];

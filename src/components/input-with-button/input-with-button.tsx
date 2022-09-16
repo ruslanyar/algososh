@@ -1,21 +1,11 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 
 import { Button } from '../ui/button/button';
 import { Input } from '../ui/input/input';
 
-import styles from './input-with-button.module.css';
+import { InputWithButtonProps } from './types';
 
-interface InputWithButtonProps {
-  value: string;
-  maxLength?: number;
-  max?: number;
-  text: string;
-  type?: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onClick: () => void;
-  isLoader: boolean;
-  disabled?: boolean;
-}
+import styles from './input-with-button.module.css';
 
 export const InputWithButton: React.FC<InputWithButtonProps> = ({
   value,

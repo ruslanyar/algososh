@@ -4,36 +4,10 @@ import { Circle } from '../ui/circle/circle';
 import { InputWithButton } from '../input-with-button/input-with-button';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
-import { swap } from '../../utils/utils';
 import { DELAY_IN_MS } from '../../constants/delays';
-import { ElementStates } from '../../types/element-states';
+import { getArrayOfLetters, getCircleState } from './utils';
 
 import styles from './string.module.css';
-
-const getArrayOfLetters = (str: string): string[][] | null => {
-  if (!str) return null;
-
-  const arr = str.split('');
-  const result: string[][] = [[...arr]];
-
-  let start = 0,
-    end = arr.length - 1;
-
-  while (start <= end) {
-    swap(arr, start, end);
-    result.push([...arr]);
-    start++;
-    end--;
-  }
-
-  return result;
-};
-
-const getCircleState = (idx: number, step: number, len: number) => {
-  if (idx < step || idx > len - 1 - step) return ElementStates.Modified;
-  if (idx === step || idx === len - 1 - step) return ElementStates.Changing;
-  if (idx > step && idx < len - 1 - step) return ElementStates.Default;
-};
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState('');

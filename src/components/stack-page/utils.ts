@@ -1,8 +1,4 @@
-interface IStack<T> {
-  push: (item: T) => void;
-  pop: () => void;
-  clear: () => void;
-}
+import { IStack } from './types';
 
 export class Stack<T = string> implements IStack<T> {
   private stack: T[] = [];
