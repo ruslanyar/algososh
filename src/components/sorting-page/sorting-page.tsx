@@ -7,7 +7,7 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { Direction } from '../../types/direction';
 import { bubbleSort, getRandomArr, selectionSort } from './sorting-algo';
-import { TElement } from '../../types/element-states';
+import { TElement } from './types';
 
 import styles from './sorting-page.module.css';
 

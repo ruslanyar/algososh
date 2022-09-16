@@ -3,8 +3,3 @@ export enum ElementStates {
   Changing = "changing",
   Modified = "modified",
 }
-
-export type TElement = {
-  value: number;
-  state: ElementStates;
-};

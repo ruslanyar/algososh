@@ -9,7 +9,8 @@ import {
 import { setDelay, swap } from '../../utils/utils';
 
 import { Direction } from '../../types/direction';
-import { ElementStates, TElement } from '../../types/element-states';
+import { ElementStates } from '../../types/element-states';
+import { TElement } from './types';
 
 const getRandomInRange = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
