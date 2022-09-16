@@ -6,6 +6,7 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { getFibMatrix } from './utils';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { maxFibonacciNum, minFibonacciNum, quantityOfCirclesInRow } from './constants';
 
 import styles from './fibonacci-page.module.css';
 
@@ -36,9 +37,13 @@ export const FibonacciPage: React.FC = () => {
     }, SHORT_DELAY_IN_MS);
   }, [inputValue]);
 
-  const isDisabled = +inputValue > 19 || inputValue === '';
+  const isDisabled =
+    +inputValue < minFibonacciNum ||
+    +inputValue > maxFibonacciNum ||
+    inputValue === '';
 
-  const justify = fibArray.length < 11 ? 'center' : 'flex-start';
+  const justify =
+    fibArray.length <= quantityOfCirclesInRow ? 'center' : 'flex-start';
 
   return (
     <SolutionLayout title='Последовательность Фибоначчи'>

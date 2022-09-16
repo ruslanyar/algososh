@@ -5,7 +5,7 @@ import {
   MAX_LENGTH,
   MIN_VALUE,
   MAX_VALUE,
-} from '../../constants/array-ranges';
+} from './constants';
 import { setDelay, swap } from '../../utils/utils';
 
 import { Direction } from '../../types/direction';

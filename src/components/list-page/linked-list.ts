@@ -30,7 +30,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   }
 
   prepend = (item: T) => {
-    if (this.size >= this.sizeLimit) return;
+    if (this.size >= this.sizeLimit) return this;
     const node = new LinkedListNode<T>(item);
 
     if (this.head === null) {
@@ -41,10 +41,11 @@ export class LinkedList<T> implements ILinkedList<T> {
     }
 
     this.size++;
+    return node;
   };
 
   append = (item: T) => {
-    if (this.size >= this.sizeLimit) return;
+    if (this.size >= this.sizeLimit) return this;
     const node = new LinkedListNode<T>(item);
     let current;
 
@@ -61,10 +62,11 @@ export class LinkedList<T> implements ILinkedList<T> {
     }
 
     this.size++;
+    return node;
   };
 
   addByIndex = (item: T, index: number) => {
-    if (index < 0 || index > this.size || this.size >= this.sizeLimit) return;
+    if (index < 0 || index > this.size || this.size >= this.sizeLimit) return this;
     if (index === 0 || !this.head) {
       this.prepend(item);
     } else if (index === this.size) {
@@ -81,11 +83,12 @@ export class LinkedList<T> implements ILinkedList<T> {
       prev!.next = node;
       node.next = curr;
       this.size++;
+      return node;
     }
   };
 
   deleteByIndex = (index: number) => {
-    if (index < 0 || index >= this.size || !this.head) return;
+    if (index < 0 || index >= this.size || !this.head) return this;
     let prev = null;
     let curr = this.head;
     do {
@@ -95,16 +98,18 @@ export class LinkedList<T> implements ILinkedList<T> {
     } while (index > 0);
     prev.next = curr.next;
     this.size--;
+    return curr;
   };
 
   deleteHead = () => {
-    if (this.head === null) return;
+    if (this.head === null) return this;
     this.head = this.head.next;
     this.size--;
+    return this.head;
   };
 
   deleteTail = () => {
-    if (this.head === null) return;
+    if (this.head === null) return this;
     let prev = null;
     let curr = this.head;
 
@@ -120,6 +125,8 @@ export class LinkedList<T> implements ILinkedList<T> {
     }
 
     this.size--;
+
+    return curr;
   };
 
   toArray = () => {

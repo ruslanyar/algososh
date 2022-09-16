@@ -34,6 +34,7 @@ export class Queue<T = string> implements IQueue<T> {
 
   clear = () => {
     this.queue = Array.from({ length: this.size });
+    this.head = this.tail = 0;
     this.length = 0;
   };
 

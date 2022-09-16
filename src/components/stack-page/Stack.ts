@@ -2,13 +2,20 @@ import { IStack } from './types';
 
 export class Stack<T = string> implements IStack<T> {
   private stack: T[] = [];
+  private maxSize: number;
+
+  constructor(maxSize?: number) {
+    this.maxSize = maxSize === undefined ? Infinity : maxSize;
+  }
 
   push = (item: T) => {
+    if (this.stack.length >= this.stackLimit) return this;
     this.stack.push(item);
+    return this;
   }
 
   pop = () => {
-    this.stack.pop();
+    return this.stack.pop();
   }
 
   clear = () => {
@@ -25,5 +32,9 @@ export class Stack<T = string> implements IStack<T> {
 
   get lastIndex() {
     return this.stack.length - 1;
+  }
+
+  get stackLimit() {
+    return this.maxSize;
   }
 }

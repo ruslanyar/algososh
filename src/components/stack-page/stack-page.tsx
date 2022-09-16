@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
@@ -7,14 +7,13 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { ElementStates } from '../../types/element-states';
 import { DELAY_IN_MS } from '../../constants/delays';
-import { Stack } from './utils';
+import { Stack } from './Stack';
 
 import styles from './stack-page.module.css';
 
-const stack = new Stack();
-
 export const StackPage: React.FC = () => {
-  const [stackList, setStackList] = useState<string[]>(stack.elements);
+  const stack = useRef(new Stack(20));
+  const [stackList, setStackList] = useState<string[]>(stack.current.elements);
   const [inputValue, setInputValue] = useState('');
   const [lastElementState, setLastElementState] = useState(
     ElementStates.Changing
@@ -31,8 +30,8 @@ export const StackPage: React.FC = () => {
   const addToStack = (item: string) => {
     setIsLoading((prev) => ({ ...prev, add: true }));
     setLastElementState(ElementStates.Changing);
-    stack.push(item);
-    setStackList([...stack.elements]);
+    stack.current.push(item);
+    setStackList([...stack.current.elements]);
     setInputValue('');
     setTimeout(() => {
       setLastElementState(ElementStates.Default);
@@ -44,16 +43,16 @@ export const StackPage: React.FC = () => {
     setIsLoading((prev) => ({ ...prev, delete: true }));
     setLastElementState(ElementStates.Changing);
     setTimeout(() => {
-      stack.pop();
-      setStackList([...stack.elements]);
+      stack.current.pop();
+      setStackList([...stack.current.elements]);
       setLastElementState(ElementStates.Default);
       setIsLoading((prev) => ({ ...prev, delete: false }));
     }, DELAY_IN_MS);
   };
 
   const clearStack = () => {
-    stack.clear();
-    setStackList(stack.elements);
+    stack.current.clear();
+    setStackList(stack.current.elements);
   };
 
   const isEmpty = !stackList.length;
@@ -71,7 +70,9 @@ export const StackPage: React.FC = () => {
         <Button
           text='Добавить'
           onClick={() => addToStack(inputValue)}
-          disabled={!inputValue || stack.size >= 20}
+          disabled={
+            !inputValue || stack.current.size >= stack.current.stackLimit
+          }
           isLoader={isLoading.add}
         />
         <Button
@@ -93,9 +94,9 @@ export const StackPage: React.FC = () => {
               <Circle
                 letter={el}
                 index={idx}
-                head={stack.lastIndex === idx ? 'top' : null}
+                head={stack.current.lastIndex === idx ? 'top' : null}
                 state={
-                  stack.lastIndex === idx
+                  stack.current.lastIndex === idx
                     ? lastElementState
                     : ElementStates.Default
                 }

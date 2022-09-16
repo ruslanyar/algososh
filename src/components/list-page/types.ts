@@ -18,3 +18,5 @@ export type TElement = {
 };
 
 type TCircle = Pick<TElement, 'value' | 'state'> & { type: string };
+
+export type Step<T> = T[][];

@@ -3,7 +3,7 @@ export const swap = (
   firstIndex: number,
   secondIndex: number
 ): void => {
-  let tmp = arr[firstIndex];
+  const tmp = arr[firstIndex];
   arr[firstIndex] = arr[secondIndex];
   arr[secondIndex] = tmp;
 };

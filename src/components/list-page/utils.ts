@@ -1,40 +1,58 @@
 import { CIRCLE, HEAD, TAIL } from '../../constants/element-captions';
 import { ElementStates } from '../../types/element-states';
-import { LinkedList } from './LinkedList';
-import { linkedList } from './list-page';
-import { TElement } from './types';
+import { LinkedList } from './linked-list';
+import { Step, TElement } from './types';
 
-export function getInitState<T extends string>(
-  linkedList: LinkedList<T>
-): TElement[] {
-  const array = linkedList.toArray();
-  const renderList = array.map((el, idx) => {
-    const element: TElement = {
+const elementTemplate: TElement = {
+  value: '',
+  head: {
+    type: '',
+    value: '',
+    state: ElementStates.Changing,
+  },
+  tail: {
+    type: '',
+    value: '',
+    state: ElementStates.Changing,
+  },
+  state: ElementStates.Default,
+};
+
+export function getInitState(list: string[]): TElement[] {
+  const listToRender = list.map((el, idx) => {
+    return {
+      ...elementTemplate,
       value: el,
       head: {
-        type: '',
+        ...elementTemplate.head,
         value: idx === 0 ? HEAD : '',
-        state: ElementStates.Changing,
       },
       tail: {
-        type: '',
-        value: idx === array.length - 1 ? TAIL : '',
-        state: ElementStates.Changing,
-      },
-      state: ElementStates.Default,
+        ...elementTemplate.tail,
+        value: idx === list.length - 1 ? TAIL : '',
+      }
     };
-    return element;
   });
-  return renderList;
+  return listToRender;
 }
 
-export function getAddToHeadMatrix(list: TElement[], item: string) {
+export function getAddToHeadMatrix<T extends string>(
+  linkedList: LinkedList<T>,
+  item: T
+): Step<TElement> {
   const matrix = [];
+
+  const list: TElement[] = getInitState(linkedList.toArray());
+  if (!list.length)
+    list.push({
+      ...elementTemplate,
+      head: { ...elementTemplate.head },
+      tail: { ...elementTemplate.tail },
+    });
 
   const firstStep = [];
   let firstElement = { ...list[0] };
   let firstElementHead = { ...firstElement.head };
-
   firstElementHead.type = CIRCLE;
   firstElementHead.value = item;
   firstElement.head = firstElementHead;
@@ -43,7 +61,7 @@ export function getAddToHeadMatrix(list: TElement[], item: string) {
 
   linkedList.prepend(item);
 
-  const secondStep = getInitState(linkedList);
+  const secondStep = getInitState(linkedList.toArray());
   firstElement = { ...secondStep[0] };
   firstElement.state = ElementStates.Modified;
   secondStep[0] = firstElement;
@@ -58,8 +76,20 @@ export function getAddToHeadMatrix(list: TElement[], item: string) {
   return matrix;
 }
 
-export function getAddToTailMatrix(list: TElement[], item: string) {
+export function getAddToTailMatrix<T extends string>(
+  linkedList: LinkedList<T>,
+  item: T
+): Step<TElement> {
   const matrix = [];
+
+  const list = getInitState(linkedList.toArray());
+
+  if (!list.length)
+  list.push({
+    ...elementTemplate,
+    head: { ...elementTemplate.head },
+    tail: { ...elementTemplate.tail },
+  });
 
   const firstStep = list.map((el, idx, array) => {
     if (idx === array.length - 1) {
@@ -77,15 +107,17 @@ export function getAddToTailMatrix(list: TElement[], item: string) {
 
   linkedList.append(item);
 
-  const secondStep = getInitState(linkedList).map((el, idx, array) => {
-    if (idx === array.length - 1) {
-      return {
-        ...el,
-        state: ElementStates.Modified,
-      };
+  const secondStep = getInitState(linkedList.toArray()).map(
+    (el, idx, array) => {
+      if (idx === array.length - 1) {
+        return {
+          ...el,
+          state: ElementStates.Modified,
+        };
+      }
+      return el;
     }
-    return el;
-  });
+  );
 
   const thirdStep = secondStep.map((el, idx, array) => {
     if (idx === array.length - 1) {
@@ -102,8 +134,12 @@ export function getAddToTailMatrix(list: TElement[], item: string) {
   return matrix;
 }
 
-export function getDeleteHeadMatrix(list: TElement[]) {
+export function getDeleteHeadMatrix<T extends string>(
+  linkedList: LinkedList<T>
+): Step<TElement> {
   const matrix = [];
+
+  const list = getInitState(linkedList.toArray());
 
   const firstStep = list.map((el, idx) => {
     if (idx === 0) {
@@ -122,14 +158,18 @@ export function getDeleteHeadMatrix(list: TElement[]) {
 
   linkedList.deleteHead();
 
-  const secondStep = getInitState(linkedList);
+  const secondStep = getInitState(linkedList.toArray());
   matrix.push(firstStep, secondStep);
 
   return matrix;
 }
 
-export function getDeleteTailMatrix(list: TElement[]) {
+export function getDeleteTailMatrix<T extends string>(
+  linkedList: LinkedList<T>
+): Step<TElement> {
   const matrix = [];
+
+  const list = getInitState(linkedList.toArray());
 
   const firstStep = list.map((el, idx, array) => {
     if (idx === array.length - 1) {
@@ -148,18 +188,20 @@ export function getDeleteTailMatrix(list: TElement[]) {
 
   linkedList.deleteTail();
 
-  const secondStep = getInitState(linkedList);
+  const secondStep = getInitState(linkedList.toArray());
   matrix.push(firstStep, secondStep);
 
   return matrix;
 }
 
-export function getAddByIndexMatrix(
-  list: TElement[],
-  item: string,
+export function getAddByIndexMatrix<T extends string>(
+  linkedList: LinkedList<T>,
+  item: T,
   index: number
-) {
+): Step<TElement> {
   const matrix = [];
+
+  const list = getInitState(linkedList.toArray());
 
   for (let i = 0; i <= index; i++) {
     const step = list.map((el, idx) => {
@@ -185,7 +227,7 @@ export function getAddByIndexMatrix(
 
   linkedList.addByIndex(item, index);
 
-  const preLastStep = getInitState(linkedList);
+  const preLastStep = getInitState(linkedList.toArray());
   const insertedEl = { ...preLastStep[index] };
   insertedEl.state = ElementStates.Modified;
   preLastStep[index] = { ...insertedEl };
@@ -199,8 +241,13 @@ export function getAddByIndexMatrix(
   return matrix;
 }
 
-export function getDeleteByIndexMatrix(list: TElement[], index: number) {
+export function getDeleteByIndexMatrix<T extends string>(
+  linkedList: LinkedList<T>,
+  index: number
+): Step<TElement> {
   const matrix = [];
+
+  const list = getInitState(linkedList.toArray());
 
   for (let i = 0; i <= index; i++) {
     const step = list.map((el, idx) => {
@@ -228,7 +275,7 @@ export function getDeleteByIndexMatrix(list: TElement[], index: number) {
 
   linkedList.deleteByIndex(index);
 
-  const lastStep = getInitState(linkedList);
+  const lastStep = getInitState(linkedList.toArray());
 
   matrix.push(preLastStep, lastStep);
 

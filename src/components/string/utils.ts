@@ -20,7 +20,11 @@ export const getArrayOfLetters = (str: string): string[][] | null => {
   return result;
 };
 
-export const getCircleState = (idx: number, step: number, len: number) => {
+export const getCircleState = (
+  idx: number,
+  step: number,
+  len: number
+): ElementStates | undefined => {
   if (idx < step || idx > len - 1 - step) return ElementStates.Modified;
   if (idx === step || idx === len - 1 - step) return ElementStates.Changing;
   if (idx > step && idx < len - 1 - step) return ElementStates.Default;

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
@@ -7,15 +7,14 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 import { HEAD, TAIL } from '../../constants/element-captions';
 import { ElementStates } from '../../types/element-states';
-import { Queue } from './utils';
+import { Queue } from './Queue';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 import styles from './queue-page.module.css';
 
-const queue = new Queue(7);
-
 export const QueuePage: React.FC = () => {
-  const [queueList, setQueueList] = useState(queue.elements);
+  const queue = useRef(new Queue(7));
+  const [queueList, setQueueList] = useState(queue.current.elements);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState({ enq: false, deq: false });
   const [elementsState, setElementsState] = useState({
@@ -31,8 +30,8 @@ export const QueuePage: React.FC = () => {
     setIsLoading((prev) => ({ ...prev, enq: true }));
     setElementsState((prev) => ({ ...prev, tail: ElementStates.Changing }));
 
-    queue.enqueue(item);
-    setQueueList(queue.elements);
+    queue.current.enqueue(item);
+    setQueueList(queue.current.elements);
     setInputValue('');
 
     setTimeout(() => {
@@ -43,16 +42,16 @@ export const QueuePage: React.FC = () => {
 
   const dequeueHandler = () => {
     setIsLoading((prev) => ({ ...prev, deq: true }));
-    if (queue.len === 1) {
+    if (queue.current.len === 1) {
       setElementsState((prev) => ({ ...prev, tail: ElementStates.Changing }));
     } else {
       setElementsState((prev) => ({ ...prev, head: ElementStates.Changing }));
     }
 
     setTimeout(() => {
-      queue.dequeue();
-      setQueueList(queue.elements);
-      if (queue.len === 0) {
+      queue.current.dequeue();
+      setQueueList(queue.current.elements);
+      if (queue.current.len === 0) {
         setElementsState((prev) => ({ ...prev, tail: ElementStates.Default }));
       } else {
         setElementsState((prev) => ({ ...prev, head: ElementStates.Default }));
@@ -62,8 +61,8 @@ export const QueuePage: React.FC = () => {
   };
 
   const clearQueue = () => {
-    queue.clear();
-    setQueueList(queue.elements);
+    queue.current.clear();
+    setQueueList(queue.current.elements);
   };
 
   const getCircleState = (list: Queue, idx: number) => {
@@ -89,19 +88,19 @@ export const QueuePage: React.FC = () => {
         <Button
           text='Добавить'
           onClick={() => enqueueHandler(inputValue)}
-          disabled={!inputValue || queue.isFull || isLoading.deq}
+          disabled={!inputValue || queue.current.isFull || isLoading.deq}
           isLoader={isLoading.enq}
         />
         <Button
           text='Удалить'
           onClick={dequeueHandler}
-          disabled={queue.isEmpty || isLoading.enq}
+          disabled={queue.current.isEmpty || isLoading.enq}
           isLoader={isLoading.deq}
         />
         <Button
           text='Очистить'
           onClick={clearQueue}
-          disabled={queue.isEmpty || isLoading.enq || isLoading.deq}
+          disabled={queue.current.isEmpty || isLoading.enq || isLoading.deq}
         />
       </div>
       <ul className={`${styles['elements-container']} list`}>
@@ -111,9 +110,17 @@ export const QueuePage: React.FC = () => {
               <Circle
                 letter={el}
                 index={idx}
-                head={!queue.isEmpty && idx === queue.headIdx ? HEAD : null}
-                tail={!queue.isEmpty && idx === queue.tailIdx ? TAIL : null}
-                state={getCircleState(queue, idx)}
+                head={
+                  !queue.current.isEmpty && idx === queue.current.headIdx
+                    ? HEAD
+                    : null
+                }
+                tail={
+                  !queue.current.isEmpty && idx === queue.current.tailIdx
+                    ? TAIL
+                    : null
+                }
+                state={getCircleState(queue.current, idx)}
               />
             </li>
           ))}
