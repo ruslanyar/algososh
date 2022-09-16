@@ -1,0 +1,6 @@
+.input-container {
+  display: flex;
+  max-width: 522px;
+  gap: 12px;
+  margin: 0 auto 120px;
+}

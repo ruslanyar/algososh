@@ -1,0 +1,6 @@
+.elements-container {
+  display: flex;
+  gap: 16px;
+  margin: 0 auto;
+  justify-content: center;
+}
