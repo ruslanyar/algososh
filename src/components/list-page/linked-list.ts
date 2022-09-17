@@ -30,7 +30,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   }
 
   prepend = (item: T) => {
-    if (this.size >= this.sizeLimit) return this;
+    if (this.size >= this.sizeLimit) return null;
     const node = new LinkedListNode<T>(item);
 
     if (this.head === null) {
@@ -45,7 +45,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   };
 
   append = (item: T) => {
-    if (this.size >= this.sizeLimit) return this;
+    if (this.size >= this.sizeLimit) return null;
     const node = new LinkedListNode<T>(item);
     let current;
 
@@ -66,7 +66,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   };
 
   addByIndex = (item: T, index: number) => {
-    if (index < 0 || index > this.size || this.size >= this.sizeLimit) return this;
+    if (index < 0 || index > this.size || this.size >= this.sizeLimit) return null;
     if (index === 0 || !this.head) {
       this.prepend(item);
     } else if (index === this.size) {
@@ -88,7 +88,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   };
 
   deleteByIndex = (index: number) => {
-    if (index < 0 || index >= this.size || !this.head) return this;
+    if (index < 0 || index >= this.size || !this.head) return null;
     let prev = null;
     let curr = this.head;
     do {
@@ -102,14 +102,14 @@ export class LinkedList<T> implements ILinkedList<T> {
   };
 
   deleteHead = () => {
-    if (this.head === null) return this;
+    if (this.head === null) return null;
     this.head = this.head.next;
     this.size--;
     return this.head;
   };
 
   deleteTail = () => {
-    if (this.head === null) return this;
+    if (this.head === null) return null;
     let prev = null;
     let curr = this.head;
 
