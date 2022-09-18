@@ -25,6 +25,8 @@ export const getCircleState = (
   step: number,
   len: number
 ): ElementStates | undefined => {
+  console.log({idx,step,len});
+  
   if (idx < step || idx > len - 1 - step) return ElementStates.Modified;
   if (idx === step || idx === len - 1 - step) return ElementStates.Changing;
   if (idx > step && idx < len - 1 - step) return ElementStates.Default;
