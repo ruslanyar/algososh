@@ -1,6 +1,6 @@
 describe('Тестирование переходов по страницам', () => {
   before(() => {
-    cy.visit('http://localhost:3000/')
+    cy.visit('/')
     cy.contains('МБОУ АЛГОСОШ');
   });
 
