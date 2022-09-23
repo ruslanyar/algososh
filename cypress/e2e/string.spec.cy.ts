@@ -11,7 +11,7 @@ describe('Страница "Строка"', () => {
     cy.get('@reverseBtn').should('be.disabled');
     cy.get('input').type('word');
     cy.get('input').should('have.value', 'word');
-    cy.get('@reverseBtn').should('not.be.disabled');
+    cy.get('@reverseBtn').should('be.enabled');
     cy.get('input').type('{backspace}{backspace}{backspace}{backspace}');
     cy.get('input').should('have.value', '');
     cy.get('@reverseBtn').should('be.disabled');

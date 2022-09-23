@@ -13,7 +13,7 @@ describe('Страница "Стек"', () => {
       .as('addBtn')
       .should('be.disabled');
     cy.get('input').type('3');
-    cy.get('@addBtn').should('not.be.disabled');
+    cy.get('@addBtn').should('be.enabled');
     cy.get('input').type('{backspace}');
     cy.get('@addBtn').should('be.disabled');
   });
@@ -59,7 +59,7 @@ describe('Страница "Стек"', () => {
     cy.get('input').type('4');
     cy.get('@addBtn').click().wait(1000);
     cy.get('li').as('list').should('have.length', '2');
-    cy.get('@delBtn').should('not.be.disabled').click();
+    cy.get('@delBtn').should('be.enabled').click();
     cy.get('@list')
       .within(() => {
         cy.get('[class*=circle_circle]')

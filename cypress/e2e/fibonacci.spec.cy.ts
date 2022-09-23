@@ -10,7 +10,7 @@ describe('Страница "Последовательность Фибонач�
     cy.get('button').last().as('calculateBtn');
     cy.get('@calculateBtn').should('be.disabled');
     cy.get('input').type('1').should('have.value', '1');
-    cy.get('@calculateBtn').should('not.be.disabled');
+    cy.get('@calculateBtn').should('be.enabled');
     cy.get('input').type('{backspace}').should('have.value', '');
     cy.get('@calculateBtn').should('be.disabled');
   });
