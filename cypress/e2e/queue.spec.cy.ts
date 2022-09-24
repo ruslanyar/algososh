@@ -1,5 +1,3 @@
-/* eslint-disable testing-library/await-async-utils */
-/* eslint-disable cypress/no-unnecessary-waiting */
 describe('Страница "Очередь"', () => {
   beforeEach(() => {
     cy.visit('/queue');
@@ -19,6 +17,7 @@ describe('Страница "Очередь"', () => {
   });
 
   it('элементы добавляются корректно', () => {
+    cy.clock();
     cy.get('li')
       .as('elements')
       .should('have.length', '7')
@@ -36,18 +35,17 @@ describe('Страница "Очередь"', () => {
 
     cy.get('@elements').each(($el, idx) => {
       if (idx === 0) {
-        cy.wrap($el)
-          .within(() => {
-            cy.get('[class*=circle_letter]').should('have.text', '55');
-            cy.get('[class*=circle_head]').should('have.text', 'head');
-            cy.get('[class*=circle_tail]').should('have.text', 'tail');
-            cy.get('[class*=circle_circle]').should(
-              'have.css',
-              'border',
-              '4px solid rgb(210, 82, 225)'
-            );
-          })
-          .wait(500);
+        cy.wrap($el).within(() => {
+          cy.get('[class*=circle_letter]').should('have.text', '55');
+          cy.get('[class*=circle_head]').should('have.text', 'head');
+          cy.get('[class*=circle_tail]').should('have.text', 'tail');
+          cy.get('[class*=circle_circle]').should(
+            'have.css',
+            'border',
+            '4px solid rgb(210, 82, 225)'
+          );
+        });
+        cy.tick(500);
 
         cy.wrap($el).within(() => {
           cy.get('[class*=circle_circle]').should(
@@ -58,10 +56,8 @@ describe('Страница "Очередь"', () => {
         });
       }
     });
-
     cy.get('input').type('3');
     cy.get('@addBtn').click();
-
     cy.get('@elements').each(($el, idx) => {
       if (idx === 0 || idx === 1) {
         cy.wrap($el).within(() => {
@@ -79,20 +75,18 @@ describe('Страница "Очередь"', () => {
   });
 
   it('элементы удаляются корректно', () => {
+    cy.clock();
     cy.get('button')
       .contains('Удалить')
       .parent()
       .as('delBtn')
       .should('be.disabled');
     cy.get('input').type('3');
-    cy.get('button')
-      .contains('Добавить')
-      .parent()
-      .as('addBtn')
-      .click()
-      .wait(500);
+    cy.get('button').contains('Добавить').parent().as('addBtn').click();
+    cy.tick(500);
     cy.get('input').type('4');
-    cy.get('@addBtn').click().wait(500);
+    cy.get('@addBtn').click();
+    cy.tick(500);
     cy.get('@delBtn').click();
     cy.get('li')
       .as('list')
@@ -111,8 +105,8 @@ describe('Страница "Очередь"', () => {
       .as('secondEl')
       .within(() => {
         cy.get('[class*=circle_head]').should('not.have.text');
-      })
-      .wait(500);
+      });
+    cy.tick(500);
 
     cy.get('@firstEl').within(() => {
       cy.get('[class*=circle_head]').should('not.have.text');
@@ -130,22 +124,21 @@ describe('Страница "Очередь"', () => {
   });
 
   it('поведение кнопки "Очистить" корректно', () => {
+    cy.clock();
     cy.get('button')
       .contains('Очистить')
       .parent()
       .as('clearBtn')
       .should('be.disabled');
     cy.get('input').type('1');
-    cy.get('button')
-      .contains('Добавить')
-      .parent()
-      .as('addBtn')
-      .click()
-      .wait(500);
+    cy.get('button').contains('Добавить').parent().as('addBtn').click();
+    cy.tick(500);
     cy.get('input').type('2');
-    cy.get('@addBtn').click().wait(500);
+    cy.get('@addBtn').click();
+    cy.tick(500);
     cy.get('input').type('3');
-    cy.get('@addBtn').click().wait(500);
+    cy.get('@addBtn').click();
+    cy.tick(500);
 
     cy.get('@clearBtn').should('be.enabled').click();
     cy.get('li').each(($el, idx) => {
