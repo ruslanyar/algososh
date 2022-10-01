@@ -33,6 +33,7 @@ export const FibonacciPage: React.FC = () => {
       } else {
         clearInterval(timerId);
         setIsLoading(false);
+        setInputValue('');
       }
     }, SHORT_DELAY_IN_MS);
   }, [inputValue]);

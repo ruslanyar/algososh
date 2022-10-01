@@ -38,6 +38,7 @@ export const StringComponent: React.FC = () => {
       } else {
         clearInterval(timerId);
         setIsLoading(false);
+        setInputValue('');
       }
     }, DELAY_IN_MS);
   }, [inputValue]);
@@ -51,6 +52,7 @@ export const StringComponent: React.FC = () => {
         onChange={onChangeHandler}
         onClick={onClickHandler}
         isLoader={isLoading}
+        disabled={!inputValue}
       />
       <ul className={`${styles['elements-container']} list`}>
         {letters?.arr &&
