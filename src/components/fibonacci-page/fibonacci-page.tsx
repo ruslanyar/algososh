@@ -50,7 +50,7 @@ export const FibonacciPage: React.FC = () => {
     <SolutionLayout title='Последовательность Фибоначчи'>
       <InputWithButton
         value={inputValue}
-        text='Расчитать'
+        text='Рассчитать'
         type='number'
         max={19}
         isLoader={isLoading}
